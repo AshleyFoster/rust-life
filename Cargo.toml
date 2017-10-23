@@ -1,0 +1,6 @@
+[package]
+name = "life"
+version = "0.1.0"
+authors = ["Ashley Foster <ashley@ashleyfoster.me>"]
+
+[dependencies]
