@@ -1,36 +1,52 @@
+use std::io;
+
 fn main() {
-    let grid = vec![
+    let mut grid = vec![
         vec!["_", "_", "x", "_"],
-        vec!["x", "x", "x", "_"],
+        vec!["x", "_", "x", "_"],
         vec!["_", "_", "x", "_"],
         vec!["_", "_", "_", "_"],
     ];
 
         print_grid(&grid);
 
-        let mut new_grid = grid.clone();
-        update_grid(&grid, &mut new_grid);
-        print_grid(&new_grid);
+
+        loop {
+            update_grid(&mut grid);
+            print_grid(&grid);
+
+            let mut continue_loop = String::new();
+            io::stdin().read_line(&mut continue_loop).expect("Please type either Y or N");
+
+            let continue_loop = continue_loop.trim();
+
+            if continue_loop == "Y" {
+                continue
+            } else {
+                break
+            }
+        }
 }
 
-fn update_grid(grid: &Vec<Vec<&str>>, new_grid: &mut Vec<Vec<&str>>) -> () {
+fn update_grid(grid: &mut Vec<Vec<&str>>) -> () {
+    let old_grid = grid.clone();
 
-    for y in 0..grid.len() {
-        for x in 0..grid[y].len() {
-            let neighbors = neighbor_count(&grid, x, y);
+    for y in 0..old_grid.len() {
+        for x in 0..old_grid[y].len() {
+            let neighbors = neighbor_count(&old_grid, x, y);
 
-            if is_alive(&grid, x, y) {
+            if is_alive(&old_grid, x, y) {
                 if neighbors >= 4 {
-                    new_grid[y][x] = "_";
+                    grid[y][x] = "_";
                 }
 
                 if neighbors <= 1 {
-                    new_grid[y][x] = "_";
+                    grid[y][x] = "_";
                 }
 
             } else {
                 if neighbors == 3 {
-                    new_grid[y][x] = "x";
+                    grid[y][x] = "x";
                 }
             }
         }
