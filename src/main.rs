@@ -6,10 +6,14 @@ fn main() {
         vec!["_", "_", "_", "_"],
     ];
 
-    // println!("Now {:?} will print!", grid);
-    print_grid(&grid);
+        print_grid(&grid);
 
-    let mut new_grid = grid.clone();
+        let mut new_grid = grid.clone();
+        update_grid(&grid, &mut new_grid);
+        print_grid(&new_grid);
+}
+
+fn update_grid(grid: &Vec<Vec<&str>>, new_grid: &mut Vec<Vec<&str>>) -> () {
 
     for y in 0..grid.len() {
         for x in 0..grid[y].len() {
@@ -31,8 +35,6 @@ fn main() {
             }
         }
     }
-
-    print_grid(&new_grid);
 }
 
 fn neighbor_count(grid: &Vec<Vec<&str>>, current_x: usize, current_y: usize) -> usize {
