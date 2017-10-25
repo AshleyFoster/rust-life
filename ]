@@ -13,8 +13,7 @@ fn main() {
 
         loop {
             let mut continue_loop = String::new();
-            println!("Would you like to continue? y/n: ");
-            io::stdin().read_line(&mut continue_loop).expect("Could not get user input");
+            io::stdin().read_line(&mut continue_loop).expect("Please type either Y or N");
 
             if continue_loop.trim() == "y" {
                 update_grid(&mut grid);
