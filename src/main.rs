@@ -1,11 +1,33 @@
 use std::io;
+use std::fmt;
+
+#[derive(Clone)]
+struct Cell {
+    alive: bool,
+}
+
+impl Cell {
+    fn new(alive: bool) -> Cell {
+        Cell { alive: alive }
+    }
+}
+
+impl fmt::Display for Cell {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        if self.alive == true {
+            write!(f, "x")
+        } else {
+            write!(f, "_")
+        }
+    }
+}
 
 fn main() {
     let mut grid = vec![
-        vec!["_", "_", "x", "_"],
-        vec!["x", "_", "x", "_"],
-        vec!["_", "_", "x", "_"],
-        vec!["_", "_", "_", "_"],
+        vec![Cell::new(false), Cell::new(false), Cell::new(true), Cell::new(false)],
+        vec![Cell::new(true), Cell::new(false), Cell::new(true), Cell::new(false)],
+        vec![Cell::new(false), Cell::new(false), Cell::new(true), Cell::new(false)],
+        vec![Cell::new(false), Cell::new(false) , Cell::new(false) , Cell::new(false)],
     ];
 
         print_grid(&grid);
@@ -25,7 +47,7 @@ fn main() {
         }
 }
 
-fn update_grid(grid: &mut Vec<Vec<&str>>) -> () {
+fn update_grid(grid: &mut Vec<Vec<Cell>>) -> () {
     let old_grid = grid.clone();
 
     for y in 0..old_grid.len() {
@@ -34,23 +56,23 @@ fn update_grid(grid: &mut Vec<Vec<&str>>) -> () {
 
             if is_alive(&old_grid, x, y) {
                 if neighbors >= 4 {
-                    grid[y][x] = "_";
+                    grid[y][x] = Cell::new(false);
                 }
 
                 if neighbors <= 1 {
-                    grid[y][x] = "_";
+                    grid[y][x] = Cell::new(false);
                 }
 
             } else {
                 if neighbors == 3 {
-                    grid[y][x] = "x";
+                    grid[y][x] = Cell::new(true);
                 }
             }
         }
     }
 }
 
-fn neighbor_count(grid: &Vec<Vec<&str>>, current_x: usize, current_y: usize) -> usize {
+fn neighbor_count(grid: &Vec<Vec<Cell>>, current_x: usize, current_y: usize) -> usize {
     let mut count = 0;
     if current_x > 0 && current_y > 0 {
         if is_alive(grid, current_x - 1, current_y - 1) {
@@ -93,21 +115,19 @@ fn neighbor_count(grid: &Vec<Vec<&str>>, current_x: usize, current_y: usize) -> 
     count
 }
 
-fn is_alive(grid: &Vec<Vec<&str>>, x: usize, y: usize) -> bool {
+fn is_alive(grid: &Vec<Vec<Cell>>, x: usize, y: usize) -> bool {
     match grid.get(y) {
         None => false,
         Some(row) => {
             match row.get(x) {
                 None => false,
-                Some(cell) => {
-                    *cell == "x"
-                }
+                Some(cell) => cell.alive
             }
         }
     }
 }
 
-fn print_grid(grid: &Vec<Vec<&str>>) -> () {
+fn print_grid(grid: &Vec<Vec<Cell>>) -> () {
     for row in grid {
         for cell in row.iter() {
             print!("{}", cell);
