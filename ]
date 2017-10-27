@@ -1,33 +1,11 @@
 use std::io;
-use std::fmt;
-
-#[derive(Clone)]
-struct Cell {
-    alive: bool,
-}
-
-impl Cell {
-    fn new(alive: bool) -> Cell {
-        Cell { alive: alive }
-    }
-}
-
-impl fmt::Display for Cell {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        if self.alive == true {
-            write!(f, "x")
-        } else {
-            write!(f, "_")
-        }
-    }
-}
 
 fn main() {
     let mut grid = vec![
-        vec![Cell::new(false), Cell::new(false), Cell::new(true), Cell::new(false)],
-        vec![Cell::new(true), Cell::new(false), Cell::new(true), Cell::new(false)],
-        vec![Cell::new(false), Cell::new(false), Cell::new(true), Cell::new(false)],
-        vec![Cell::new(false), Cell::new(false) , Cell::new(false) , Cell::new(false)],
+        vec!["_", "_", "x", "_"],
+        vec!["x", "_", "x", "_"],
+        vec!["_", "_", "x", "_"],
+        vec!["_", "_", "_", "_"],
     ];
 
         print_grid(&grid);
@@ -35,8 +13,7 @@ fn main() {
 
         loop {
             let mut continue_loop = String::new();
-            println!("Would you like to continue? y/n: ");
-            io::stdin().read_line(&mut continue_loop).expect("Could not get user input");
+            io::stdin().read_line(&mut continue_loop).expect("Please type either Y or N");
 
             if continue_loop.trim() == "y" {
                 update_grid(&mut grid);
@@ -47,7 +24,7 @@ fn main() {
         }
 }
 
-fn update_grid(grid: &mut Vec<Vec<Cell>>) -> () {
+fn update_grid(grid: &mut Vec<Vec<&str>>) -> () {
     let old_grid = grid.clone();
 
     for y in 0..old_grid.len() {
@@ -56,23 +33,23 @@ fn update_grid(grid: &mut Vec<Vec<Cell>>) -> () {
 
             if is_alive(&old_grid, x, y) {
                 if neighbors >= 4 {
-                    grid[y][x] = Cell::new(false);
+                    grid[y][x] = "_";
                 }
 
                 if neighbors <= 1 {
-                    grid[y][x] = Cell::new(false);
+                    grid[y][x] = "_";
                 }
 
             } else {
                 if neighbors == 3 {
-                    grid[y][x] = Cell::new(true);
+                    grid[y][x] = "x";
                 }
             }
         }
     }
 }
 
-fn neighbor_count(grid: &Vec<Vec<Cell>>, current_x: usize, current_y: usize) -> usize {
+fn neighbor_count(grid: &Vec<Vec<&str>>, current_x: usize, current_y: usize) -> usize {
     let mut count = 0;
     if current_x > 0 && current_y > 0 {
         if is_alive(grid, current_x - 1, current_y - 1) {
@@ -115,19 +92,21 @@ fn neighbor_count(grid: &Vec<Vec<Cell>>, current_x: usize, current_y: usize) -> 
     count
 }
 
-fn is_alive(grid: &Vec<Vec<Cell>>, x: usize, y: usize) -> bool {
+fn is_alive(grid: &Vec<Vec<&str>>, x: usize, y: usize) -> bool {
     match grid.get(y) {
         None => false,
         Some(row) => {
             match row.get(x) {
                 None => false,
-                Some(cell) => cell.alive
+                Some(cell) => {
+                    *cell == "x"
+                }
             }
         }
     }
 }
 
-fn print_grid(grid: &Vec<Vec<Cell>>) -> () {
+fn print_grid(grid: &Vec<Vec<&str>>) -> () {
     for row in grid {
         for cell in row.iter() {
             print!("{}", cell);
